@@ -1,0 +1,41 @@
+{
+  "short_name": "Auth System",
+  "name": "Enterprise Authentication System",
+  "description": "Secure enterprise-grade authentication with SSO, MFA, and advanced security features",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4285f4",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "categories": ["security", "enterprise", "authentication"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Login",
+      "url": "/auth",
+      "description": "Go to login page"
+    },
+    {
+      "name": "Dashboard",
+      "url": "/dashboard",
+      "description": "Go to dashboard"
+    }
+  ]
+} 

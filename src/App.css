@@ -1,0 +1,418 @@
+/* DatabaseManager Component Styles */
+.admin-tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1rem;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #555;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-button.active {
+  color: #0077ff;
+  border-bottom: 2px solid #0077ff;
+  font-weight: bold;
+}
+
+.admin-content {
+  padding: 1rem 0;
+}
+
+.admin-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.log-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.log-table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.log-table-container th, 
+.log-table-container td {
+  padding: 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.9rem;
+}
+
+.log-table-container th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+}
+
+.log-level-error {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.log-level-warning {
+  background-color: rgba(255, 165, 0, 0.1);
+}
+
+.log-level-info {
+  background-color: rgba(0, 119, 255, 0.05);
+}
+
+.code-block, 
+.log-table-container pre {
+  background-color: #f5f5f5;
+  padding: 0.5rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.export-result {
+  margin-top: 1rem;
+}
+
+.export-result h4 {
+  margin-bottom: 0.5rem;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.import-warning {
+  margin-top: 1rem;
+  color: #ff3300;
+  font-size: 0.9rem;
+}
+
+.message {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.message.success {
+  background-color: rgba(0, 200, 0, 0.1);
+  color: #006600;
+  border: 1px solid #00cc00;
+}
+
+.message.error {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #cc0000;
+  border: 1px solid #ff0000;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0;
+  color: inherit;
+}
+
+/* Admin Dashboard Styles */
+.admin-dashboard {
+  max-width: 90%;
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-dashboard-title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.user-table, 
+.log-table {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.user-table table,
+.log-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-table th,
+.user-table td,
+.log-table th,
+.log-table td {
+  padding: 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.user-table th,
+.log-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+/* Make responsive tables */
+@media (max-width: 768px) {
+  .admin-dashboard {
+    width: 100%;
+    padding: 0 1rem;
+    max-width: 100%;
+  }
+  
+  .admin-tabs {
+    flex-direction: column;
+    border-bottom: none;
+    margin-bottom: 0.5rem;
+  }
+  
+  .tab-button {
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0.25rem;
+  }
+  
+  .tab-button.active {
+    border-bottom: 2px solid #0077ff;
+  }
+  
+  .admin-dashboard-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .button-group {
+    flex-wrap: wrap;
+  }
+  
+  .button-group button {
+    flex: 1 0 45%;
+    margin-bottom: 0.5rem;
+    min-width: 120px;
+  }
+  
+  .user-table,
+  .log-table,
+  .log-table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    font-size: 0.85rem;
+  }
+  
+  /* Adjust table columns for mobile */
+  .user-table td, 
+  .log-table td,
+  .log-table-container td {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Adjust form elements */
+  .form-textarea {
+    height: 100px;
+  }
+  
+  /* Improved message display */
+  .message {
+    padding: 0.5rem 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .message .close-button {
+    align-self: flex-end;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .admin-dashboard {
+    padding: 0 0.5rem;
+  }
+  
+  .admin-dashboard-title {
+    font-size: 1.25rem;
+  }
+  
+  .admin-content {
+    padding: 0.5rem 0;
+  }
+  
+  .admin-subtitle {
+    font-size: 1rem;
+  }
+  
+  .tab-button {
+    font-size: 0.9rem;
+    padding: 0.4rem 0;
+  }
+  
+  .button-group button {
+    flex: 1 0 100%;
+    font-size: 0.9rem;
+    padding: 0.4rem;
+  }
+  
+  /* Make tables more compact */
+  .user-table th, 
+  .user-table td,
+  .log-table th, 
+  .log-table td,
+  .log-table-container th,
+  .log-table-container td {
+    padding: 0.4rem;
+    font-size: 0.8rem;
+  }
+  
+  /* Hide less important columns */
+  .user-table .hide-on-mobile,
+  .log-table .hide-on-mobile,
+  .log-table-container .hide-on-mobile {
+    display: none;
+  }
+}
+
+/* Tablet devices */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .admin-dashboard {
+    width: 100%;
+    max-width: 95%;
+    padding: 0 1rem;
+  }
+  
+  .admin-dashboard-title {
+    font-size: 1.6rem;
+  }
+  
+  .user-table th, 
+  .user-table td,
+  .log-table th, 
+  .log-table td {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .button-group {
+    gap: 0.4rem;
+  }
+  
+  .export-result {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1440px) {
+  .admin-dashboard {
+    max-width: 1400px;
+  }
+  
+  .admin-dashboard-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .admin-subtitle {
+    font-size: 1.4rem;
+  }
+  
+  .tab-button {
+    font-size: 1.1rem;
+    padding: 0.6rem 1.2rem;
+  }
+  
+  .user-table, 
+  .log-table, 
+  .log-table-container {
+    margin-top: 1.5rem;
+  }
+  
+  .user-table th, 
+  .user-table td,
+  .log-table th, 
+  .log-table td,
+  .log-table-container th,
+  .log-table-container td {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+  
+  .log-table-container {
+    max-height: 600px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .admin-tabs,
+  .button-group,
+  .form-textarea,
+  .close-button {
+    display: none;
+  }
+  
+  .admin-dashboard {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+  
+  .user-table, 
+  .log-table, 
+  .log-table-container {
+    border: none;
+    overflow: visible;
+  }
+  
+  .user-table th, 
+  .user-table td,
+  .log-table th, 
+  .log-table td,
+  .log-table-container th,
+  .log-table-container td {
+    border: 1px solid #ddd;
+  }
+} 

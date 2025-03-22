@@ -1,0 +1,44 @@
+HOW TO RUN THE ENTERPRISE AUTHENTICATION LOGIN SYSTEM
+
+SETUP INSTRUCTIONS:
+------------------
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+
+2. Start the development server:
+   ```
+   npm start
+   ```
+
+   This will launch the application at http://localhost:3000
+
+ALTERNATIVE VITE SETUP:
+----------------------
+If you encounter issues with the Create React App setup, you can try using Vite instead:
+
+1. Update package.json scripts section:
+   ```
+   "scripts": {
+     "dev": "vite",
+     "build": "vite build",
+     "preview": "vite preview"
+   }
+   ```
+
+2. Run the development server:
+   ```
+   npm run dev
+   ```
+
+TROUBLESHOOTING:
+---------------
+- If you see only a blank page, check the browser console for errors
+- Make sure you have all required dependencies installed
+- Try clearing your browser cache
+- If ReactDOM errors appear, make sure you're using the correct version of React
+
+NOTE: This is a client-side only authentication system. All data is stored in your browser's localStorage and will be cleared if you clear your browser data.
+

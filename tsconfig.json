@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    
+    /* Performance optimizations */
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.cache/.tsbuildinfo",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "importHelpers": true,
+    "inlineSources": false,
+    "sourceMap": true,
+
+    /* Advanced type checking */
+    "noImplicitReturns": true,
+    "noUnusedLocals": false, // Enabled during CI but disabled during development
+    "noUnusedParameters": false,
+    
+    /* Avoid path issues */
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*", "src/types"],
+  "exclude": ["node_modules", "build", "scripts", "**/*.test.ts", "**/*.test.tsx"],
+  /* Improve build performance with transpileOnly in dev */
+  "ts-node": {
+    "transpileOnly": true
+  }
+}
