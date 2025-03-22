@@ -28,6 +28,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Clean build directory
+        run: |
+          rimraf dist node_modules/.cache
+
       - name: Debug node_modules
         run: |
           echo "Checking for critical dependencies:"

@@ -13,7 +13,7 @@
     "build:analyze": "vite build --mode analyze",
     "build:prod": "vite build",
     "build:clean": "rimraf dist && npm run build",
-    "clean": "rimraf dist --force node_modules/.cache",
+    "clean": "rimraf dist node_modules/.cache",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
     "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx src --fix",
     "compress": "node scripts/compress-assets.js",
