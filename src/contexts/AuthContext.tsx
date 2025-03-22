@@ -52,6 +52,8 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   error: string | null;
+  isAuthenticated?: boolean;
+  isAdmin?: boolean;
   login: (email: string, password: string) => Promise<LoginResult>;
   logout: () => void;
   register: (email: string, password: string, name?: string) => Promise<RegisterResult>;
@@ -574,8 +576,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           user: {
             id: uuidv4(),
             email,
-            firstName: 'Demo',
-            lastName: 'User',
+            name: 'Demo User',
+            isAdmin: false,
             role: 'user',
           },
         },
