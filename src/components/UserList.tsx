@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
+import AuthContext from '../contexts/AuthContext';
 import { UserRecord } from '../utils/database';
 import { getAllUsers } from '../utils/databaseHelper';
 import { downloadPdf, exportUsersToPdf } from '../utils/exportPdf';

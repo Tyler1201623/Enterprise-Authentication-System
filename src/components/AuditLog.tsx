@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
+import AuthContext from '../contexts/AuthContext';
 import { AuditLog as AuditLogType } from '../types';
 import { getAllLogs, getLogCount } from '../utils/databaseHelper';
 import { downloadPdf, exportAuditLogsToPdf } from '../utils/exportPdf';
