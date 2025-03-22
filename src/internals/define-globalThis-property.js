@@ -1,32 +1,28 @@
-// Define a global property utility for cross-environment support
+// Simple utility to define properties on the global object
 'use strict';
 
 /**
+ * Get the global object across different JavaScript environments
+ * @returns {object} The global object
+ */
+function getGlobalObject() {
+  // eslint-disable-next-line no-undef
+  if (typeof globalThis !== 'undefined') return globalThis;
+  if (typeof window !== 'undefined') return window;
+  if (typeof global !== 'undefined') return global;
+  // eslint-disable-next-line no-restricted-globals
+  if (typeof self !== 'undefined') return self;
+  return Function('return this')();
+}
+
+/**
  * Define a property on the global object
- * Works across different JavaScript environments
  * @param {string} name Property name
  * @param {any} value Property value
  * @returns {boolean} Success status
  */
 function defineGlobalProperty(name, value) {
-  // Get global object for the current environment safely
-  let globalObj;
-  
-  // Try to get the global object using various methods
-  if (typeof window !== 'undefined') {
-    globalObj = window;
-  } else if (typeof global !== 'undefined') {
-    globalObj = global;
-  } else {
-    try {
-      // Last resort: Try Function constructor approach
-      globalObj = new Function('return this')();
-    } catch (e) {
-      // If everything fails, use empty object as fallback
-      globalObj = {};
-      console.warn('Could not find global object');
-    }
-  }
+  const globalObj = getGlobalObject();
   
   try {
     if (Object.defineProperty) {
@@ -37,7 +33,6 @@ function defineGlobalProperty(name, value) {
         value: value
       });
     } else {
-      // Fallback for older environments
       globalObj[name] = value;
     }
     return true;
@@ -47,5 +42,10 @@ function defineGlobalProperty(name, value) {
   }
 }
 
-// Only use one export approach to avoid circular references
-export default defineGlobalProperty; 
+// Export for ES modules
+export default defineGlobalProperty;
+
+// Support CommonJS environments
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = defineGlobalProperty;
+} 
