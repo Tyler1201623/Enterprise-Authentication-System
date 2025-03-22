@@ -7,7 +7,6 @@ import Footer from './components/Footer';
 import ForgotPassword from './components/ForgotPassword';
 import Header from './components/Header';
 import NotFound from './components/NotFound';
-import PasswordRecovery from './components/PasswordRecovery';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
 import './styles.css';
@@ -24,7 +23,7 @@ const App: React.FC = () => {
   }, [user, isAdmin]);
   
   return (
-    <Router>
+    <Router basename="/Enterprise-Authentication-System">
       <div className="app">
         <Header />
         
@@ -61,12 +60,6 @@ const App: React.FC = () => {
             />
             
             {/* Password recovery */}
-            <Route
-              path="/password-recovery"
-              element={<PasswordRecovery />}
-            />
-
-            {/* Forgot password */}
             <Route
               path="/forgot-password"
               element={<ForgotPassword />}

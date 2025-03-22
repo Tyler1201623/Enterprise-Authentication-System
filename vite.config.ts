@@ -7,6 +7,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   base: "/Enterprise-Authentication-System/",
+  publicDir: "public",
   server: {
     port: 3000,
     open: true,
@@ -47,6 +48,8 @@ export default defineConfig({
     outDir: "dist",
     sourcemap: true,
     target: "es2020",
+    assetsDir: "assets",
+    emptyOutDir: true,
     commonjsOptions: {
       transformMixedEsModules: true,
     },

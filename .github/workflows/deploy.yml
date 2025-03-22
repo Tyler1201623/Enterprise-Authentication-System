@@ -25,14 +25,30 @@ jobs:
         run: npm ci
 
       - name: Build project
-        run: npm run vite:build
+        run: npm run build
+
+      # Copy public assets to dist
+      - name: Copy static assets
+        run: |
+          echo "Ensuring public assets are in dist..."
+          cp -r public/* dist/ || echo "No public directory found"
+          [ -f "public/favicon.ico" ] && cp public/favicon.ico dist/ || echo "No favicon.ico in public directory"
+          [ -f "favicon.ico" ] && cp favicon.ico dist/ || echo "No favicon.ico in root directory"
 
       # Add a special _redirects file for SPAs (GitHub Pages doesn't natively support SPAs)
       - name: Create _redirects file for SPA routing
         run: |
           mkdir -p dist
+          if [ -f "dist/index.html" ]; then
+            cp dist/index.html dist/404.html
+          else
+            echo "Warning: dist/index.html not found, cannot create 404.html"
+            echo "<html><head><meta http-equiv=\"refresh\" content=\"0;URL='/Enterprise-Authentication-System/'\" /></head><body>Redirecting...</body></html>" > dist/404.html
+          fi
           echo "/* /index.html 200" > dist/_redirects
-          [ -f dist/index.html ] && cp dist/index.html dist/404.html || echo "404.html" > dist/404.html
+          cp favicon.ico dist/ || echo "Warning: favicon.ico not found"
+          mkdir -p dist/assets
+          cp -r public/* dist/ || echo "Warning: No files in public directory"
 
       # Debug step to verify the dist contents
       - name: Debug - List dist directory contents
