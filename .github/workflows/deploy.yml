@@ -30,12 +30,12 @@ jobs:
       # Add a special _redirects file for SPAs (GitHub Pages doesn't natively support SPAs)
       - name: Create _redirects file for SPA routing
         run: |
-          echo "/* /index.html 200" > build/_redirects
-          echo "404.html" > build/404.html
-          cp build/index.html build/404.html
+          echo "/* /index.html 200" > dist/_redirects
+          echo "404.html" > dist/404.html
+          cp dist/index.html dist/404.html
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build
+          folder: dist
           branch: gh-pages

@@ -52,8 +52,8 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   error: string | null;
-  isAuthenticated?: boolean;
-  isAdmin?: boolean;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
   login: (email: string, password: string) => Promise<LoginResult>;
   logout: () => void;
   register: (email: string, password: string, name?: string) => Promise<RegisterResult>;
@@ -80,6 +80,8 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: false,
   error: null,
+  isAuthenticated: false,
+  isAdmin: false,
   login: async () => ({ success: false, error: 'Not implemented' }),
   logout: () => {},
   register: async () => ({ success: false, error: 'Not implemented' }),
@@ -839,6 +841,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     loading,
     error,
+    isAuthenticated: !!user,
+    isAdmin: !!user?.isAdmin,
     login,
     logout,
     register,
