@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Navigate, Route, HashRouter as Router, Routes } from 'react-router-dom';
 import AdminDashboard from './components/AdminDashboard';
 import AuthFormSwitcher from './components/AuthFormSwitcher';
 import Dashboard from './components/Dashboard';
@@ -13,6 +13,8 @@ import './styles.css';
 
 // For debugging loading issues
 console.log('App component loaded');
+console.log('Running in environment:', import.meta.env.MODE);
+console.log('Base URL:', document.baseURI);
 
 const App: React.FC = () => {
   const { user, isAdmin } = useAuth();
@@ -20,10 +22,15 @@ const App: React.FC = () => {
   useEffect(() => {
     console.log('App component mounted');
     console.log('Auth state:', { isAuthenticated: !!user, isAdmin });
+    
+    // Debug information for GitHub Pages
+    console.log('Current URL:', window.location.href);
+    console.log('Pathname:', window.location.pathname);
+    console.log('Hash:', window.location.hash);
   }, [user, isAdmin]);
   
   return (
-    <Router basename="/Enterprise-Authentication-System">
+    <Router>
       <div className="app">
         <Header />
         

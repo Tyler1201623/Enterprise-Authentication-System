@@ -10,7 +10,6 @@
     <meta name="theme-color" content="#1a73e8" />
     <base href="/Enterprise-Authentication-System/" />
     <link rel="icon" type="image/ico" href="favicon.ico" />
-    <link rel="preload" href="assets/logo.svg" as="image" />
     <title>Enterprise Authentication System</title>
 
     <!-- Loading screen styles -->
@@ -145,6 +144,16 @@
         console.error("Application loading timeout exceeded");
       }, 10000); // 10 seconds timeout
 
+      // Log browser info for debugging
+      console.log("Browser info:", navigator.userAgent);
+      console.log("Base URL:", document.baseURI);
+      console.log("Page location:", window.location.href);
+
+      // Add fallback if the main script fails to load
+      window.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM Content Loaded");
+      });
+
       // Global error handler
       window.addEventListener("error", function (event) {
         console.error("Global error caught:", event.error);
@@ -174,7 +183,7 @@
       };
     </script>
 
-    <!-- Application entry point -->
-    <script type="module" src="src/main.tsx"></script>
+    <!-- Application entry point - using build directory in production -->
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

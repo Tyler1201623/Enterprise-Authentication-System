@@ -99,9 +99,14 @@ export default defineConfig({
       transformMixedEsModules: true,
     },
     minify: "esbuild",
+    reportCompressedSize: true,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       external: [],
       output: {
+        entryFileNames: "assets/[name].[hash].js",
+        chunkFileNames: "assets/[name].[hash].js",
+        assetFileNames: "assets/[name].[hash].[ext]",
         manualChunks: {
           "react-vendor": ["react", "react-dom", "react-router-dom"],
           "utils-vendor": [
