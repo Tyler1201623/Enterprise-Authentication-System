@@ -310,7 +310,7 @@ const AuthAnalyticsDashboard: React.FC = () => {
       <>
         <strong>Type:</strong> {getEventTypeName(event.type)}<br />
         <strong>User:</strong> {event.email || 'Unknown'}<br />
-        <strong>Device:</strong> {event.deviceInfo?.browser || 'Unknown'} / {event.deviceInfo?.os || 'Unknown'}<br />
+        <strong>Device:</strong> {event.deviceId || 'Unknown'}<br />
         {event.ip && <><strong>IP:</strong> {event.ip}<br /></>}
         {event.metadata && Object.keys(event.metadata).length > 0 && (
           <>
@@ -434,8 +434,8 @@ const AuthAnalyticsDashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredEvents.map((event) => (
-                <tr key={event.id}>
+              {filteredEvents.map((event, index) => (
+                <tr key={`event-${event.timestamp}-${index}`}>
                   <Td>{formatDate(event.timestamp)}</Td>
                   <Td>
                     {getEventIcon(event.type)} {getEventTypeName(event.type)}
