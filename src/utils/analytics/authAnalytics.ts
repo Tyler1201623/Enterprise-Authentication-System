@@ -13,6 +13,7 @@ export enum AuthEventType {
   SIGNUP_ATTEMPT = "signup_attempt",
   SIGNUP_SUCCESS = "signup_success",
   SIGNUP_ERROR = "signup_error",
+  PASSWORD_RESET = "password_reset",
   PASSWORD_RESET_REQUEST = "password_reset_request",
   PASSWORD_RESET_COMPLETE = "password_reset_complete",
   MFA_REQUIRED = "mfa_required",
