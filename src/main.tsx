@@ -3,16 +3,17 @@
 
 // Import polyfills correctly - ensure they're loaded first
 import 'buffer'; // Import the module first
-import { Buffer } from 'buffer';
-import process from 'process/browser';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import './App.css';
 import { AuthProvider } from './contexts/AuthContext';
 import './index.css'; // Tailwind CSS
 import './styles.css';
 
-// Import our custom define-globalThis-property module directly with .js extension
+// Import the global property define function directly with explicit path
+// This helps Rollup resolve the module correctly
+// Using direct import with .js extension for better path resolution
 import defineGlobalProperty from './internals/define-globalThis-property.js';
 
 // Make sure globalThis is properly defined
@@ -23,25 +24,18 @@ console.log('Enterprise Authentication System starting...');
 // Set up error tracking to debug blank screen issues
 let hasRendered = false;
 
-// Ensure polyfills are available globally
+// Set up polyfills and environment globals early
 (function setupPolyfills() {
-  try {
-    // Polyfill for Buffer
-    if (typeof window.Buffer === 'undefined') {
-      console.log('Buffer not defined, adding polyfill');
-      window.Buffer = Buffer as any;
-    }
-
-    // Fix: Set window.process properly
-    if (typeof window.process === 'undefined') {
-      console.log('Process not defined, adding polyfill');
-      window.process = process as any;
-    }
-    
-    console.log('Polyfills setup complete');
-  } catch (err) {
-    console.error('Error setting up polyfills:', err);
+  // Define global property for process
+  defineGlobalProperty('process', { env: { NODE_ENV: import.meta.env.MODE || 'production' } });
+  
+  // Define global property for buffer if needed
+  if (typeof window !== 'undefined' && !window.Buffer) {
+    defineGlobalProperty('Buffer', null);
   }
+
+  // More setup code...
+  console.log('Polyfills and global properties initialized');
 })();
 
 // Add detailed error handling for uncaught errors
