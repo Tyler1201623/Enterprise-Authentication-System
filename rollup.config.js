@@ -2,6 +2,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import path from 'path';
 
 /**
  * Enhanced Rollup configuration for better Node.js polyfill handling
@@ -13,7 +14,13 @@ export default {
       browser: true,
       preferBuiltins: false,
       dedupe: ['react', 'react-dom'],
-      extensions: ['.js', '.jsx', '.ts', '.tsx']
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      // Add custom aliases to help resolve paths correctly
+      alias: {
+        'src': path.resolve('./src'),
+        '../src/internals/define-globalThis-property': path.resolve('./src/internals/define-globalThis-property.js'),
+        './internals/define-globalThis-property': path.resolve('./src/internals/define-globalThis-property.js')
+      }
     }),
     commonjs({
       transformMixedEsModules: true,
@@ -32,6 +39,8 @@ export default {
       name: 'debug-rollup',
       buildStart() {
         console.log('Rollup build starting with enhanced configuration...');
+        console.log('Working directory:', process.cwd());
+        console.log('Resolved internals path:', path.resolve('./src/internals'));
       },
       buildEnd() {
         console.log('Rollup build completed successfully!');

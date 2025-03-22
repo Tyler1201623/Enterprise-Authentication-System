@@ -13,6 +13,7 @@ import './index.css'; // Tailwind CSS
 import './styles.css';
 
 // Import our custom define-globalThis-property module
+// Direct import without relative path to avoid resolution issues in different environments
 import defineGlobalProperty from './internals/define-globalThis-property';
 
 // Make sure globalThis is properly defined
