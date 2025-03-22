@@ -41,6 +41,9 @@ function getGlobalThis() {
   }
 }
 
-// Export using both CommonJS and ES module syntax to avoid issues
-module.exports = getGlobalThis;
+// Export the function for all module systems
+if (typeof module !== 'undefined') {
+  module.exports = getGlobalThis;
+}
+
 export default getGlobalThis; 
