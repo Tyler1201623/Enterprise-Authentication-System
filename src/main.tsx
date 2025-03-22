@@ -12,9 +12,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import './index.css'; // Tailwind CSS
 import './styles.css';
 
-// Import our custom define-globalThis-property module
-// Direct import without relative path to avoid resolution issues in different environments
-import defineGlobalProperty from './internals/define-globalThis-property';
+// Import our custom define-globalThis-property module directly with .js extension
+import defineGlobalProperty from './internals/define-globalThis-property.js';
 
 // Make sure globalThis is properly defined
 defineGlobalProperty('globalThis', typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this);

@@ -7,7 +7,7 @@
  * Define a property on the global object 
  * Works across different JavaScript environments
  */
-module.exports = function defineGlobalProperty(name, value) {
+export default function defineGlobalProperty(name, value) {
   try {
     // For Node.js environment
     if (typeof global !== 'undefined') {
@@ -43,4 +43,4 @@ module.exports = function defineGlobalProperty(name, value) {
     console.warn('Failed to define global property:', name, error);
     return false;
   }
-}; 
+} 

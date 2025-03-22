@@ -18,14 +18,18 @@ export default {
       // Add custom aliases to help resolve paths correctly
       alias: {
         'src': path.resolve('./src'),
+        // Fix circular reference by providing exact file paths with extensions
         '../src/internals/define-globalThis-property': path.resolve('./src/internals/define-globalThis-property.js'),
-        './internals/define-globalThis-property': path.resolve('./src/internals/define-globalThis-property.js')
+        './internals/define-globalThis-property': path.resolve('./src/internals/define-globalThis-property.js'),
+        '../internals/define-globalThis-property': path.resolve('./src/internals/define-globalThis-property.js')
       }
     }),
+    // Process CommonJS modules properly
     commonjs({
       transformMixedEsModules: true,
       include: [
-        /node_modules/
+        /node_modules/,
+        /src\/internals/  // Include the internals directory for CommonJS processing
       ]
     }),
     replace({
@@ -41,6 +45,7 @@ export default {
         console.log('Rollup build starting with enhanced configuration...');
         console.log('Working directory:', process.cwd());
         console.log('Resolved internals path:', path.resolve('./src/internals'));
+        console.log('Checking for define-globalThis-property.js:', require('fs').existsSync(path.resolve('./src/internals/define-globalThis-property.js')));
       },
       buildEnd() {
         console.log('Rollup build completed successfully!');
