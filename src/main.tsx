@@ -5,12 +5,18 @@
 import 'buffer'; // Import the module first
 import { Buffer } from 'buffer';
 import process from 'process/browser';
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import { AuthProvider } from './contexts/AuthContext';
 import './index.css'; // Tailwind CSS
 import './styles.css';
+
+// Import our custom define-globalThis-property module
+import defineGlobalProperty from './internals/define-globalThis-property';
+
+// Make sure globalThis is properly defined
+defineGlobalProperty('globalThis', typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this);
 
 console.log('Enterprise Authentication System starting...');
 
@@ -146,15 +152,15 @@ function initApp() {
     console.log('Root element found, rendering application...');
     
     // Use createRoot for React 18
-    const root = ReactDOM.createRoot(rootElement);
+    const root = createRoot(rootElement);
     
     // Render the app with error boundaries
     root.render(
-      <React.StrictMode>
+      <StrictMode>
         <AuthProvider>
           <App />
         </AuthProvider>
-      </React.StrictMode>
+      </StrictMode>
     );
     
     console.log('React render completed!');
