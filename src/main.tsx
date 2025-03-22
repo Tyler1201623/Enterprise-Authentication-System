@@ -11,9 +11,9 @@ import { AuthProvider } from './contexts/AuthContext';
 import './index.css'; // Tailwind CSS
 import './styles.css';
 
-// Import the global property define function directly with explicit path
-// This helps Rollup resolve the module correctly
-// Using direct import with .js extension for better path resolution
+// Import the global property define function
+// Use direct relative path with .js extension to help bundlers
+// This is handled specially by Rollup to avoid circular references
 import defineGlobalProperty from './internals/define-globalThis-property.js';
 
 // Make sure globalThis is properly defined
@@ -26,16 +26,19 @@ let hasRendered = false;
 
 // Set up polyfills and environment globals early
 (function setupPolyfills() {
-  // Define global property for process
-  defineGlobalProperty('process', { env: { NODE_ENV: import.meta.env.MODE || 'production' } });
-  
-  // Define global property for buffer if needed
-  if (typeof window !== 'undefined' && !window.Buffer) {
-    defineGlobalProperty('Buffer', null);
-  }
+  try {
+    // Define global property for process
+    defineGlobalProperty('process', { env: { NODE_ENV: import.meta.env.MODE || 'production' } });
+    
+    // Define global property for buffer if needed
+    if (typeof window !== 'undefined' && !window.Buffer) {
+      defineGlobalProperty('Buffer', {});
+    }
 
-  // More setup code...
-  console.log('Polyfills and global properties initialized');
+    console.log('Polyfills and global properties initialized');
+  } catch (err) {
+    console.error('Error setting up polyfills:', err);
+  }
 })();
 
 // Add detailed error handling for uncaught errors

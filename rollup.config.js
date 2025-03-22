@@ -11,29 +11,15 @@ import path from 'path';
  */
 export default {
   plugins: [
-    // Custom plugin to resolve the circular define-globalThis-property reference
+    // First plugin to handle circular references
     {
-      name: 'resolve-globalThis-property',
+      name: 'handle-circular-references',
       resolveId(source, importer) {
-        // Handle the specific circular reference case
-        if (source === '../internals/define-globalThis-property' || 
-            source === '../internals/define-globalThis-property?commonjs-external') {
+        // Special handling for the define-globalThis-property circular reference
+        if (source.includes('define-globalThis-property')) {
           const resolvedPath = path.resolve('./src/internals/define-globalThis-property.js');
-          console.log(`Resolving ${source} from ${importer || 'unknown'} to ${resolvedPath}`);
-          return resolvedPath;
-        }
-        return null;
-      },
-      load(id) {
-        // Provide the module content directly for the problematic import
-        if (id.includes('define-globalThis-property.js')) {
-          try {
-            const resolvedPath = path.resolve('./src/internals/define-globalThis-property.js');
-            console.log(`Loading module content directly for: ${id}`);
-            return fs.readFileSync(resolvedPath, 'utf8');
-          } catch (error) {
-            console.error(`Error loading define-globalThis-property.js: ${error.message}`);
-          }
+          console.log(`[Circular Reference] Resolving ${source} from ${importer || 'unknown'} to ${resolvedPath}`);
+          return { id: resolvedPath, external: false };
         }
         return null;
       }
@@ -42,15 +28,7 @@ export default {
       browser: true,
       preferBuiltins: false,
       dedupe: ['react', 'react-dom'],
-      extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      // Add custom aliases to help resolve paths correctly
-      alias: {
-        'src': path.resolve('./src'),
-        // Fix circular reference by providing exact file paths with extensions
-        '../src/internals/define-globalThis-property': path.resolve('./src/internals/define-globalThis-property.js'),
-        './internals/define-globalThis-property': path.resolve('./src/internals/define-globalThis-property.js'),
-        '../internals/define-globalThis-property': path.resolve('./src/internals/define-globalThis-property.js')
-      }
+      extensions: ['.js', '.jsx', '.ts', '.tsx']
     }),
     // Process CommonJS modules properly
     commonjs({
@@ -59,9 +37,13 @@ export default {
         /node_modules/,
         /src\/internals/  // Include the internals directory for CommonJS processing
       ],
-      // Exclude our problematic module from external handling
-      exclude: [
-        '**/define-globalThis-property.js'
+      // Important: Make our module non-external
+      esmExternals: id => !id.includes('define-globalThis-property'),
+      // Provide specific resolution for circular
+      requireReturnsDefault: 'preferred',
+      // Special handling for the problematic module
+      dynamicRequireTargets: [
+        'src/internals/define-globalThis-property.js'
       ]
     }),
     replace({
@@ -71,13 +53,70 @@ export default {
       'global': 'globalThis',
     }),
     json(),
+    // Add special handling for the direct module
+    {
+      name: 'inject-global-this-direct',
+      resolveId(source) {
+        // Direct handling for the specific import pattern
+        if (source === '../internals/define-globalThis-property?commonjs-external') {
+          const resolvedPath = path.resolve('./src/internals/define-globalThis-property.js');
+          console.log(`[Special Case] Handling commonjs-external for ${source}`);
+          return resolvedPath;
+        }
+        return null;
+      },
+      load(id) {
+        // Intercept the direct load for our specific module
+        if (id.includes('define-globalThis-property.js')) {
+          try {
+            // Instead of reading from file, provide a direct implementation
+            // to avoid circular references
+            console.log(`[Special Load] Injecting direct code for ${id}`);
+            return `
+// Direct module implementation to avoid circular references
+'use strict';
+function defineGlobalProperty(name, value) {
+  try {
+    if (typeof global !== 'undefined') {
+      if (Object.defineProperty) {
+        Object.defineProperty(global, name, { configurable: true, writable: true, value: value });
+      } else {
+        global[name] = value;
+      }
+    }
+    if (typeof window !== 'undefined') {
+      if (Object.defineProperty) {
+        Object.defineProperty(window, name, { configurable: true, writable: true, value: value });
+      } else {
+        window[name] = value;
+      }
+    }
+    return true;
+  } catch (error) {
+    console.warn('Failed to define global property:', name, error);
+    return false;
+  }
+}
+export default defineGlobalProperty;
+module.exports = defineGlobalProperty;
+`;
+          } catch (error) {
+            console.error(`Error handling special module: ${error.message}`);
+          }
+        }
+        return null;
+      }
+    },
     {
       name: 'debug-rollup',
       buildStart() {
         console.log('Rollup build starting with enhanced configuration...');
         console.log('Working directory:', process.cwd());
         console.log('Resolved internals path:', path.resolve('./src/internals'));
-        console.log('Checking for define-globalThis-property.js:', fs.existsSync(path.resolve('./src/internals/define-globalThis-property.js')));
+        console.log('Module exists:', fs.existsSync(path.resolve('./src/internals/define-globalThis-property.js')));
+        if (fs.existsSync(path.resolve('./src/internals/define-globalThis-property.js'))) {
+          console.log('Module content:', fs.readFileSync(path.resolve('./src/internals/define-globalThis-property.js'), 'utf8'));
+        }
       },
       buildEnd() {
         console.log('Rollup build completed successfully!');
@@ -92,8 +131,15 @@ export default {
     }
   ],
   onwarn(warning, warn) {
-    // Ignore certain warnings
-    if (warning.code === 'CIRCULAR_DEPENDENCY') return;
+    // Ignore circular dependency warnings - we handle them explicitly
+    if (warning.code === 'CIRCULAR_DEPENDENCY') {
+      if (warning.message.includes('define-globalThis-property')) {
+        console.log('Ignoring circular dependency for define-globalThis-property');
+        return;
+      }
+    }
+    
+    // Ignore THIS_IS_UNDEFINED
     if (warning.code === 'THIS_IS_UNDEFINED') return;
     
     // Better logging for specific issues
