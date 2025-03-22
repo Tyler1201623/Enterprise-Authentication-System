@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
+import { verifyMfaToken } from '../utils/auth';
 
 const VerificationContainer = styled.div`
   max-width: 450px;
@@ -228,7 +229,7 @@ const MFAVerification: React.FC<MFAVerificationProps> = ({ email, onSuccess, onC
       // In a real implementation, we would verify the code against the user's secret
       // For this example, we'll just check for a match with the current generated code
       // or a hardcoded fallback code "123456" for testing
-      const success = code === "123456" || await login(email, "password", code);
+      const success = code === "123456" || await verifyMfaToken(email, code);
       
       if (success) {
         onSuccess();
