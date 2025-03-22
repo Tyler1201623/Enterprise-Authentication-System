@@ -6,8 +6,8 @@
   "homepage": "https://tyler1201623.github.io/Enterprise-Authentication-System/",
   "scripts": {
     "start": "vite",
-    "build": "vite build --debug --verbose",
-    "build:debug": "DEBUG=vite:* vite build --debug --verbose",
+    "build": "vite build --debug",
+    "build:debug": "DEBUG=vite:* vite build --debug",
     "test": "vitest",
     "analyze": "vite build --mode analyze",
     "build:analyze": "vite build --mode analyze",
