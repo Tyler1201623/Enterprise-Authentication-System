@@ -7,6 +7,7 @@
   "scripts": {
     "start": "vite",
     "build": "vite build --debug --verbose",
+    "build:debug": "DEBUG=vite:* vite build --debug --verbose",
     "test": "vitest",
     "analyze": "vite build --mode analyze",
     "build:analyze": "vite build --mode analyze",
@@ -16,7 +17,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
     "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx src --fix",
     "compress": "node scripts/compress-assets.js",
-    "deploy": "gh-pages -d dist",
+    "deploy": "npm run build && gh-pages -d dist",
     "prestart": "npm run clean",
     "prebuild": "npm run clean",
     "dev": "vite --open",
@@ -95,8 +96,10 @@
     "identity-obj-proxy": "^3.0.0",
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
     "tailwindcss": "^3.4.1",
     "vite": "^4.5.2",
+    "vite-plugin-node-polyfills": "^0.14.1",
     "webpack-bundle-analyzer": "^4.10.2"
   },
   "eslintConfig": {
@@ -119,10 +122,14 @@
   },
   "browser": {
     "crypto": "crypto-browserify",
-    "process": "process/browser"
+    "process": "process/browser",
+    "stream": "stream-browserify",
+    "path": "path-browserify",
+    "util": "util"
   },
   "resolutions": {
-    "process": "^0.11.10"
+    "process": "^0.11.10",
+    "buffer": "^6.0.3"
   },
   "main": "src/main.tsx"
 }

@@ -25,13 +25,20 @@ export default defineConfig({
       util: "util",
       buffer: "buffer",
       crypto: "crypto-browserify",
+      path: "path-browserify",
     },
   },
   define: {
     "process.env": {},
-    global: {},
+    global: "globalThis",
   },
   optimizeDeps: {
+    esbuildOptions: {
+      target: "es2020",
+      define: {
+        global: "globalThis",
+      },
+    },
     include: [
       "crypto-browserify",
       "buffer",
@@ -40,9 +47,6 @@ export default defineConfig({
       "util",
       "browserify-zlib",
     ],
-    esbuildOptions: {
-      target: "es2020",
-    },
   },
   build: {
     outDir: "dist",
@@ -53,38 +57,21 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
+    minify: "esbuild",
     rollupOptions: {
       external: [],
       output: {
-        manualChunks: (id) => {
-          if (
-            id.includes("node_modules/react") ||
-            id.includes("node_modules/react-dom") ||
-            id.includes("node_modules/react-router-dom")
-          ) {
-            return "react-vendor";
-          }
-
-          if (
-            id.includes("node_modules/crypto-js") ||
-            id.includes("node_modules/buffer") ||
-            id.includes("node_modules/process") ||
-            id.includes("node_modules/nanoid") ||
-            id.includes("node_modules/otplib") ||
-            id.includes("node_modules/date-fns")
-          ) {
-            return "utils-vendor";
-          }
-
-          if (
-            id.includes("node_modules/styled-components") ||
-            id.includes("node_modules/react-icons") ||
-            id.includes("node_modules/framer-motion")
-          ) {
-            return "ui-vendor";
-          }
-
-          return null;
+        manualChunks: {
+          "react-vendor": ["react", "react-dom", "react-router-dom"],
+          "utils-vendor": [
+            "crypto-js",
+            "buffer",
+            "process/browser",
+            "nanoid",
+            "otplib",
+            "date-fns",
+          ],
+          "ui-vendor": ["styled-components", "react-icons", "framer-motion"],
         },
       },
     },

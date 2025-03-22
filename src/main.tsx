@@ -1,7 +1,8 @@
 // Add module declaration
 /// <reference types="node" />
 
-// Import polyfills correctly
+// Import polyfills correctly - ensure they're loaded first
+import 'buffer'; // Import the module first
 import { Buffer } from 'buffer';
 import process from 'process/browser';
 import React from 'react';
@@ -16,16 +17,26 @@ console.log('Enterprise Authentication System starting...');
 // Set up error tracking to debug blank screen issues
 let hasRendered = false;
 
-// Polyfill for Buffer
-if (typeof window.Buffer === 'undefined') {
-  console.log('Buffer not defined, adding polyfill');
-  window.Buffer = Buffer as any;
-}
+// Ensure polyfills are available globally
+(function setupPolyfills() {
+  try {
+    // Polyfill for Buffer
+    if (typeof window.Buffer === 'undefined') {
+      console.log('Buffer not defined, adding polyfill');
+      window.Buffer = Buffer as any;
+    }
 
-// Fix: Set window.process properly
-if (typeof window.process === 'undefined') {
-  window.process = process as any;
-}
+    // Fix: Set window.process properly
+    if (typeof window.process === 'undefined') {
+      console.log('Process not defined, adding polyfill');
+      window.process = process as any;
+    }
+    
+    console.log('Polyfills setup complete');
+  } catch (err) {
+    console.error('Error setting up polyfills:', err);
+  }
+})();
 
 // Add detailed error handling for uncaught errors
 window.addEventListener('error', (event) => {

@@ -36,10 +36,36 @@ jobs:
           ls -la node_modules/crypto-browserify || echo "crypto-browserify module not found"
           npm list process buffer crypto-browserify || true
 
-      - name: Build project
-        run: npm run build
+      - name: Check Vite Configuration
+        run: |
+          echo "Checking vite configuration file:"
+          [ -f "vite.config.ts" ] && cat vite.config.ts || echo "vite.config.ts not found"
+          [ -f "vite.config.js" ] && cat vite.config.js || echo "vite.config.js not found"
+          echo "Checking for rollup config:"
+          [ -f "rollup.config.js" ] && cat rollup.config.js || echo "rollup.config.js not found"
+
+      - name: List package.json and check scripts
+        run: |
+          echo "Package.json content:"
+          cat package.json
+          echo "\n\nNode version:"
+          node --version
+          echo "\n\nNPM version:"
+          npm --version
+
+      - name: Check for Vite CLI
+        run: |
+          echo "Looking for vite CLI:"
+          ls -la node_modules/.bin/vite || echo "vite CLI not found"
+          ls -la node_modules/vite/bin || echo "vite bin directory not found"
+
+      - name: Build project with detailed logs
+        run: |
+          echo "Starting build with DEBUG mode..."
+          DEBUG=vite:* npm run build
         env:
           NODE_ENV: production
+          DEBUG: "vite:*"
 
       # Copy public assets to dist
       - name: Copy static assets
