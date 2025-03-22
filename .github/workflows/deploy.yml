@@ -31,6 +31,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install polyfill dependencies
+        run: npm install --save-dev vite-plugin-node-polyfills
+
       - name: Clean build directory
         run: |
           rimraf dist node_modules/.cache

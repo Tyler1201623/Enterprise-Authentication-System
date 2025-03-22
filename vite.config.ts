@@ -3,9 +3,28 @@
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
 import { defineConfig } from "vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    nodePolyfills({
+      include: [
+        "buffer",
+        "process",
+        "util",
+        "stream",
+        "events",
+        "path",
+        "crypto",
+      ],
+      globals: {
+        Buffer: true,
+        global: true,
+        process: true,
+      },
+    }),
+  ],
   base: "/Enterprise-Authentication-System/",
   publicDir: "public",
   server: {
