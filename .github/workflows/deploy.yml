@@ -21,11 +21,25 @@ jobs:
           node-version: 16
           cache: "npm"
 
+      - name: Install additional build dependencies
+        run: |
+          npm install -g @rollup/plugin-node-resolve @rollup/plugin-commonjs @rollup/plugin-replace @rollup/plugin-json
+
       - name: Install dependencies
-        run: npm ci
+        run: npm install
+
+      - name: Debug node_modules
+        run: |
+          echo "Checking for critical dependencies:"
+          ls -la node_modules/process || echo "process module not found"
+          ls -la node_modules/buffer || echo "buffer module not found"
+          ls -la node_modules/crypto-browserify || echo "crypto-browserify module not found"
+          npm list process buffer crypto-browserify || true
 
       - name: Build project
         run: npm run build
+        env:
+          NODE_ENV: production
 
       # Copy public assets to dist
       - name: Copy static assets

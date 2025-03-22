@@ -19,7 +19,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "src"),
-      process: "process",
+      process: "process/browser",
       stream: "stream-browserify",
       zlib: "browserify-zlib",
       util: "util",
@@ -28,14 +28,14 @@ export default defineConfig({
     },
   },
   define: {
-    "process.env": process.env,
+    "process.env": {},
     global: {},
   },
   optimizeDeps: {
     include: [
       "crypto-browserify",
       "buffer",
-      "process",
+      "process/browser",
       "stream-browserify",
       "util",
       "browserify-zlib",
@@ -54,18 +54,37 @@ export default defineConfig({
       transformMixedEsModules: true,
     },
     rollupOptions: {
+      external: [],
       output: {
-        manualChunks: {
-          react: ["react", "react-dom", "react-router-dom"],
-          utils: [
-            "crypto-js",
-            "buffer",
-            "process",
-            "nanoid",
-            "otplib",
-            "date-fns",
-          ],
-          ui: ["styled-components", "react-icons", "framer-motion"],
+        manualChunks: (id) => {
+          if (
+            id.includes("node_modules/react") ||
+            id.includes("node_modules/react-dom") ||
+            id.includes("node_modules/react-router-dom")
+          ) {
+            return "react-vendor";
+          }
+
+          if (
+            id.includes("node_modules/crypto-js") ||
+            id.includes("node_modules/buffer") ||
+            id.includes("node_modules/process") ||
+            id.includes("node_modules/nanoid") ||
+            id.includes("node_modules/otplib") ||
+            id.includes("node_modules/date-fns")
+          ) {
+            return "utils-vendor";
+          }
+
+          if (
+            id.includes("node_modules/styled-components") ||
+            id.includes("node_modules/react-icons") ||
+            id.includes("node_modules/framer-motion")
+          ) {
+            return "ui-vendor";
+          }
+
+          return null;
         },
       },
     },

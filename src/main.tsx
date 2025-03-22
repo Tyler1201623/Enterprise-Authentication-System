@@ -1,12 +1,9 @@
 // Add module declaration
 /// <reference types="node" />
 
-// Fix: Import process correctly
-import * as process from 'process';
-
-// Consolidate polyfill setup
-import 'buffer';
+// Import polyfills correctly
 import { Buffer } from 'buffer';
+import process from 'process/browser';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
