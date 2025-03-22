@@ -1,0 +1,1 @@
+(()=>{"use strict";console.warn("index.tsx is disabled - Application is loaded from main.tsx")})();
