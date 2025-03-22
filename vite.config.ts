@@ -58,6 +58,15 @@ export default defineConfig({
       "../internals/define-globalThis-property?commonjs-external": resolve(
         "./src/internals/define-globalThis-property.js"
       ),
+      "../internals/globalThis-this": resolve(
+        "./src/internals/globalThis-this.js"
+      ),
+      "./internals/globalThis-this": resolve(
+        "./src/internals/globalThis-this.js"
+      ),
+      "../internals/globalThis-this?commonjs-external": resolve(
+        "./src/internals/globalThis-this.js"
+      ),
     },
   },
   define: {
@@ -110,10 +119,14 @@ export default defineConfig({
         {
           name: "handle-circular-references",
           resolveId(source, importer) {
-            if (source.includes("define-globalThis-property")) {
-              const resolvedPath = resolve(
-                "./src/internals/define-globalThis-property.js"
-              );
+            if (
+              source.includes("define-globalThis-property") ||
+              source.includes("globalThis-this")
+            ) {
+              const moduleName = source.includes("define-globalThis-property")
+                ? "define-globalThis-property.js"
+                : "globalThis-this.js";
+              const resolvedPath = resolve(`./src/internals/${moduleName}`);
               console.log(
                 `[Circular Reference] Resolving ${source} from ${importer || "unknown"} to ${resolvedPath}`
               );
@@ -155,6 +168,36 @@ if (typeof module !== 'undefined') {
 }
 `;
             }
+            if (id.includes("globalThis-this.js")) {
+              return `
+// Direct module implementation to avoid circular references
+'use strict';
+function getGlobalThis() {
+  if (typeof globalThis !== 'undefined') {
+    return globalThis;
+  }
+  if (typeof window !== 'undefined') {
+    return window;
+  }
+  if (typeof global !== 'undefined') {
+    return global;
+  }
+  if (typeof self !== 'undefined') {
+    return self;
+  }
+  try {
+    return Function('return this')();
+  } catch (e) {
+    return {};
+  }
+}
+// Export using both module formats
+export default getGlobalThis;
+if (typeof module !== 'undefined') {
+  module.exports = getGlobalThis;
+}
+`;
+            }
             return null;
           },
         },
@@ -179,15 +222,19 @@ if (typeof module !== 'undefined') {
           buildStart() {
             console.log("Rollup build starting with Vite integration...");
             console.log("Working directory:", process.cwd());
+            console.log("Module paths:", [
+              resolve("./src/internals/define-globalThis-property.js"),
+              resolve("./src/internals/globalThis-this.js"),
+            ]);
             console.log(
-              "Module path:",
-              resolve("./src/internals/define-globalThis-property.js")
-            );
-            console.log(
-              "Module exists:",
+              "Module exists (define-globalThis-property):",
               fs.existsSync(
                 resolve("./src/internals/define-globalThis-property.js")
               )
+            );
+            console.log(
+              "Module exists (globalThis-this):",
+              fs.existsSync(resolve("./src/internals/globalThis-this.js"))
             );
           },
         },
@@ -195,7 +242,8 @@ if (typeof module !== 'undefined') {
       onwarn(warning, warn) {
         if (
           warning.code === "CIRCULAR_DEPENDENCY" &&
-          warning.message.includes("define-globalThis-property")
+          (warning.message.includes("define-globalThis-property") ||
+            warning.message.includes("globalThis-this"))
         ) {
           return;
         }
