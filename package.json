@@ -23,7 +23,8 @@
     "dev": "vite --open",
     "dev:open": "vite --open",
     "vite:build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:basic": "vite build --config vite.config.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.10.7",

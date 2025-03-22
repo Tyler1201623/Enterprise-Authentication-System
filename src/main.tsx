@@ -3,8 +3,8 @@
 
 // Import polyfills correctly - ensure they're loaded first
 import 'buffer'; // Import the module first
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import App from './App';
 import './App.css';
 import { AuthProvider } from './contexts/AuthContext';
@@ -21,184 +21,77 @@ defineGlobalProperty('globalThis', typeof window !== 'undefined' ? window : type
 
 console.log('Enterprise Authentication System starting...');
 
-// Set up error tracking to debug blank screen issues
+// Simple initialization for window objects
+if (typeof window !== 'undefined') {
+  // @ts-ignore - Simple shim for process
+  window.process = { env: { NODE_ENV: 'production' } };
+}
+
+// Track if app has rendered
 let hasRendered = false;
 
-// Set up polyfills and environment globals early
-(function setupPolyfills() {
-  try {
-    // Define global property for process
-    defineGlobalProperty('process', { env: { NODE_ENV: import.meta.env.MODE || 'production' } });
-    
-    // Define global property for buffer if needed
-    if (typeof window !== 'undefined' && !window.Buffer) {
-      defineGlobalProperty('Buffer', {});
-    }
-
-    console.log('Polyfills and global properties initialized');
-  } catch (err) {
-    console.error('Error setting up polyfills:', err);
+// Function to remove loading screen
+function removeLoadingScreen() {
+  const loadingElement = document.getElementById('root-loading');
+  if (loadingElement) {
+    loadingElement.style.opacity = '0';
+    setTimeout(() => {
+      if (loadingElement.parentNode) {
+        loadingElement.parentNode.removeChild(loadingElement);
+      }
+    }, 500);
   }
-})();
+}
 
-// Add detailed error handling for uncaught errors
+// Error handler
 window.addEventListener('error', (event) => {
-  console.error('Uncaught error:', event.error);
-  // Log stack trace for better debugging
-  if (event.error && event.error.stack) {
-    console.error('Error stack:', event.error.stack);
-  }
+  console.error('Application error:', event.error);
   
-  // Check if we failed to render
   if (!hasRendered) {
-    const rootElement = document.getElementById('root');
-    if (rootElement) {
-      rootElement.innerHTML = `
-        <div style="padding: 20px; font-family: sans-serif;">
+    const root = document.getElementById('root');
+    if (root) {
+      root.innerHTML = `
+        <div style="padding: 20px; text-align: center; font-family: system-ui, sans-serif;">
           <h2 style="color: #d32f2f;">Error Loading Application</h2>
-          <p>The application encountered an error during initialization.</p>
-          <p>Please check the console for more details or try refreshing the page.</p>
-          <button onclick="window.location.reload()" style="padding: 8px 16px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          <p>The application encountered a problem while starting up.</p>
+          <p>Please try refreshing the page or contact support if the issue persists.</p>
+          <button onclick="window.location.reload()" style="padding: 10px 20px; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
             Refresh Page
           </button>
         </div>
       `;
     }
   }
-  
-  // Prevent app from crashing completely
-  event.preventDefault();
 });
 
-// Performance monitoring
-const logPerformanceMetrics = () => {
-  // Wait for page to be fully loaded
-  setTimeout(() => {
-    const navigationTiming = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-    if (navigationTiming) {
-      console.log('⚡️ Performance metrics:');
-      console.log(`- DOM Content Loaded: ${Math.round(navigationTiming.domContentLoadedEventEnd - navigationTiming.startTime)}ms`);
-      console.log(`- First Paint: ${Math.round(performance.getEntriesByName('first-paint')[0]?.startTime || 0)}ms`);
-      console.log(`- Time to Interactive: ${Math.round(navigationTiming.domInteractive - navigationTiming.startTime)}ms`);
-      console.log(`- Total Load Time: ${Math.round(navigationTiming.loadEventEnd - navigationTiming.startTime)}ms`);
-    }
-  }, 0);
-};
-
-// Initialize optimizations
-const preconnectUrls = [
-  'https://fonts.googleapis.com',
-  'https://fonts.gstatic.com'
-];
-
-preconnectUrls.forEach(url => {
-  const link = document.createElement('link');
-  link.rel = 'preconnect';
-  link.href = url;
-  link.crossOrigin = 'anonymous';
-  document.head.appendChild(link);
-});
-
-// Simple reportWebVitals function
-const reportWebVitals = (onPerfEntry?: (metric: any) => void) => {
-  if (onPerfEntry && onPerfEntry instanceof Function) {
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(onPerfEntry);
-      getFID(onPerfEntry);
-      getFCP(onPerfEntry);
-      getLCP(onPerfEntry);
-      getTTFB(onPerfEntry);
-    }).catch(err => {
-      console.error('Error loading web-vitals:', err);
-    });
-  }
-};
-
-// Enhanced function to remove loading screen with smooth transition
-function removeLoadingScreen() {
-  console.log('Removing loading screen');
+// Initialize the application
+try {
+  const rootElement = document.getElementById('root');
   
-  const rootLoading = document.getElementById('root-loading');
-  if (rootLoading) {
-    console.log('Found root-loading element, removing...');
-    rootLoading.style.opacity = '0';
-    rootLoading.style.transition = 'opacity 0.5s ease';
+  if (rootElement) {
+    const root = ReactDOM.createRoot(rootElement);
     
-    setTimeout(() => {
-      if (rootLoading.parentNode) {
-        rootLoading.parentNode.removeChild(rootLoading);
-        console.log('Root loading screen removed from DOM');
-      }
-    }, 500);
-  } else {
-    console.warn('No loading screen element found with ID "root-loading"');
-  }
-}
-
-// Initialize application
-function initApp() {
-  try {
-    // Find the root element
-    const rootElement = document.getElementById('root');
-
-    if (!rootElement) {
-      console.error('Root element not found in DOM!');
-      return;
-    }
-    
-    console.log('Root element found, rendering application...');
-    
-    // Use createRoot for React 18
-    const root = createRoot(rootElement);
-    
-    // Render the app with error boundaries
     root.render(
-      <StrictMode>
+      <React.StrictMode>
         <AuthProvider>
           <App />
         </AuthProvider>
-      </StrictMode>
+      </React.StrictMode>
     );
     
-    console.log('React render completed!');
     hasRendered = true;
-    
-    // Start monitoring performance
-    logPerformanceMetrics();
-    
-    // Success! Remove loading screen after render completes
     removeLoadingScreen();
-  } catch (error) {
-    console.error('Fatal error rendering application:', error);
-    
-    // Still try to remove loading screen even on error
-    removeLoadingScreen();
-    
-    // Show error message in root element
-    const rootElement = document.getElementById('root');
-    if (rootElement) {
-      rootElement.innerHTML = `
-        <div style="padding: 20px; font-family: sans-serif;">
-          <h2 style="color: #d32f2f;">Application Error</h2>
-          <p>Sorry, the application failed to initialize correctly.</p>
-          <p>Please try refreshing the page or contact support if the issue persists.</p>
-          <button onclick="window.location.reload()" style="padding: 8px 16px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer;">
-            Refresh Page
-          </button>
-        </div>
-      `;
-    }
+  } else {
+    console.error('Root element not found');
   }
+} catch (error) {
+  console.error('Fatal application error:', error);
+  removeLoadingScreen();
 }
 
-// Initialize the application
-console.log('Calling initApp()...');
-initApp();
-
-// Extra fallback to ensure loading screen gets removed
+// Backup timeout to remove loading screen
 setTimeout(() => {
   if (!hasRendered) {
-    console.warn('Application may not have rendered correctly, forcing removal of loading screen');
     removeLoadingScreen();
   }
 }, 5000);

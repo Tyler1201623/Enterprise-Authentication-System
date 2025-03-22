@@ -11,32 +11,60 @@
       // This script takes the current URL and converts the path and query string into
       // just a query string, and then redirects the browser to the new URL with
       // only a query string and hash fragment.
-      var pathSegmentsToKeep = 0;
+      var pathSegmentsToKeep = 1; // Keep the repo name segment
 
       var l = window.location;
-      l.replace(
+      var repo = "/Enterprise-Authentication-System"; // Your repo name
+
+      // Redirect to the base URL of the GitHub Pages site
+      window.location.href =
         l.protocol +
-          "//" +
-          l.hostname +
-          (l.port ? ":" + l.port : "") +
-          l.pathname
-            .split("/")
-            .slice(0, 1 + pathSegmentsToKeep)
-            .join("/") +
-          "/?/" +
-          l.pathname
-            .slice(1)
-            .split("/")
-            .slice(pathSegmentsToKeep)
-            .join("/")
-            .replace(/&/g, "~and~") +
-          (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
-          l.hash
-      );
+        "//" +
+        l.hostname +
+        (l.port ? ":" + l.port : "") +
+        repo +
+        "/#" +
+        l.pathname.slice(repo.length);
     </script>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+        color: #333;
+      }
+
+      h2 {
+        margin-bottom: 10px;
+      }
+
+      a {
+        color: #1a73e8;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
   </head>
   <body>
     <h2>Redirecting...</h2>
-    <p>If you aren't redirected automatically, <a href="/">click here</a>.</p>
+    <p>
+      If you aren't redirected automatically,
+      <a href="/Enterprise-Authentication-System/">click here</a>.
+    </p>
   </body>
 </html>
