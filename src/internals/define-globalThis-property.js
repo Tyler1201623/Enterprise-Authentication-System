@@ -10,21 +10,21 @@
  */
 function defineGlobalProperty(name, value) {
   // Get global object for the current environment safely
-  // Using Function constructor to avoid linter errors with direct globalThis/self references
   let globalObj;
   
-  try {
-    // Try to get the global object using Function constructor
-    globalObj = Function('return this')();
-  } catch (e) {
-    // If that fails, try specific environments
-    if (typeof window !== 'undefined') {
-      globalObj = window;
-    } else if (typeof global !== 'undefined') {
-      globalObj = global;
-    } else {
-      // Last resort fallback
+  // Try to get the global object using various methods
+  if (typeof window !== 'undefined') {
+    globalObj = window;
+  } else if (typeof global !== 'undefined') {
+    globalObj = global;
+  } else {
+    try {
+      // Last resort: Try Function constructor approach
+      globalObj = new Function('return this')();
+    } catch (e) {
+      // If everything fails, use empty object as fallback
       globalObj = {};
+      console.warn('Could not find global object');
     }
   }
   
@@ -47,10 +47,5 @@ function defineGlobalProperty(name, value) {
   }
 }
 
-// Support CommonJS
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = defineGlobalProperty;
-}
-
-// Support ES modules
+// Only use one export approach to avoid circular references
 export default defineGlobalProperty; 

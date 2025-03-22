@@ -5,19 +5,19 @@
 import 'buffer'; // Import the module first
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { HashRouter } from 'react-router-dom';
 import App from './App';
 import './App.css';
 import { AuthProvider } from './contexts/AuthContext';
 import './index.css'; // Tailwind CSS
 import './styles.css';
 
-// Import the global property define function
-// Use direct relative path with .js extension to help bundlers
-// This is handled specially by Rollup to avoid circular references
-import defineGlobalProperty from './internals/define-globalThis-property.js';
+// Import the global property definer utility
+import defineGlobalProperty from './internals/define-globalThis-property';
 
-// Make sure globalThis is properly defined
-defineGlobalProperty('globalThis', typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this);
+// Ensure proper buffer and process globals for browser environment
+defineGlobalProperty('process', { env: {} });
+defineGlobalProperty('Buffer', Buffer || {});
 
 console.log('Enterprise Authentication System starting...');
 
@@ -36,9 +36,7 @@ function removeLoadingScreen() {
   if (loadingElement) {
     loadingElement.style.opacity = '0';
     setTimeout(() => {
-      if (loadingElement.parentNode) {
-        loadingElement.parentNode.removeChild(loadingElement);
-      }
+      loadingElement.style.display = 'none';
     }, 500);
   }
 }
@@ -74,7 +72,9 @@ try {
     root.render(
       <React.StrictMode>
         <AuthProvider>
-          <App />
+          <HashRouter>
+            <App />
+          </HashRouter>
         </AuthProvider>
       </React.StrictMode>
     );
